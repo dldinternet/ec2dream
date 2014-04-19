@@ -22,7 +22,7 @@
 
 Gem::Specification.new do |spec|
   spec.name = 'fogviz'
-  spec.version = '3.7.2'
+  spec.version = '3.7.3'
   spec.authors = ['Neill Turner']
   spec.email = 'neillwturner@gmail.com'
   spec.executables = ["fogviz"]
@@ -33,7 +33,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency('rubyzip', '< 1.0.0')
   spec.add_dependency('gchartrb')
   spec.add_dependency('fog', '>= 1.20.0')
- 
+
   spec.description = <<-EOF
 == DESCRIPTION:
 
@@ -46,24 +46,24 @@ Fogviz combines Fog, Ruby, into a visual open source devops platform supporting:
       Amazon AWS with full support for VPC, Autoscaling and ability to list most entities.
       Amazon compatible clouds:  Eucalyptus, CloudStack.
       Openstack Clouds:  Rackspace Cloud Servers and HP Cloud.
-	  Google Compute Engine.
+          Google Compute Engine.
       Cloud Foundry.
-	  Vagrant.  
+          Vagrant.
       Chef and Puppet.
-	  Test Kitchen.
+          Test Kitchen.
 
 EOF
 
     candidates = Dir.glob("{lib}/**/*") +  ['History.md', 'README.md', 'ec2dream.ico', 'ec2dream.bmp' , 'fogviz.gemspec']
     candidates = candidates +  Dir.glob("{chef}/**/*")
-	candidates = candidates +  Dir.glob("{chef}/**/.kitchen*.yml")
+        candidates = candidates +  Dir.glob("{chef}/**/.kitchen*.yml")
     candidates = candidates +  Dir.glob("{puppet}/**/*")
     candidates = candidates +  Dir.glob("{launchrdp}/*")
     candidates = candidates +  Dir.glob("{putty}/*")
-	candidates = candidates +  Dir.glob("{google}/*")
+        candidates = candidates +  Dir.glob("{google}/*")
     candidates = candidates +  Dir.glob("{tar}/*")
     candidates = candidates +  Dir.glob("{wget}/*")
     candidates = candidates +  Dir.glob("{WinSCP}/*")
-	candidates = candidates +  Dir.glob("{vagrant}/*")
+        candidates = candidates +  Dir.glob("{vagrant}/*")
   spec.files = candidates.sort
 end

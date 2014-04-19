@@ -1,24 +1,28 @@
-def kitchen_cmd(cmd='list',instance=nil,debug=false)
+def kitchen_cmd(cmd='list',instance=nil,debug=false,repo_type="chef")
 
-def gem_install(name)
+  def gem_install(name)
 	puts "------>Installing #{name}....."
 	begin
        system "gem install  --no-ri --no-rdoc #{name}"
 	rescue
 	   puts $!
     end
-end	
-
-  chef_repository = $ec2_main.settings.get('CHEF_REPOSITORY')
+  end	
+  if repo_type=='puppet'
+    repository = $ec2_main.settings.get('PUPPET_REPOSITORY')
+  else
+    repository = $ec2_main.settings.get('CHEF_REPOSITORY')
+  end
   case cmd
    when "list"
 	gem_install('test-kitchen') if `gem list test-kitchen -i`.include?('false')
 	gem_install('kitchen-vagrant') if `gem list kitchen-vagrant -i`.include?('false')
     gem_install('kitchen-ec2') if `gem list kitchen-ec2 -i`.include?('false')
 	gem_install('berkshelf') if `gem list berkshelf -i`.include?('false')
+	gem_install('librarian-puppet') if `gem list librarian-puppet -i`.include?('false')
 	titles = []
     list = []	
-	`cd \"#{chef_repository}\" && kitchen list #{instance}`.lines do |line|
+	`cd \"#{repository}\" && kitchen list #{instance}`.lines do |line|
     	      if titles == [] 
 			     line=line.gsub('Last Action','Last-Action')
                  titles = line.split(' ')
@@ -43,7 +47,7 @@ end
       YAML::ENGINE.yamler = 'psych'
     end
     require 'safe_yaml/load'  
-    config_file = "#{chef_repository}/.kitchen/#{instance}.yml"	
+    config_file = "#{repository}/.kitchen/#{instance}.yml"	
 	config = nil
 	if File.exists?(config_file)
        config = YAML.load_file(config_file) 
@@ -54,7 +58,7 @@ end
 	return config
    when "edit"
 	   editor = @ec2_main.settings.get_system('EXTERNAL_EDITOR')
-	   c="\"#{editor}\" \"#{chef_repository}/.kitchen.yml\""
+	   c="\"#{editor}\" \"#{repository}/.kitchen.yml\""
 	   puts c
 	   system(c) 
    when 'foodcritic','rspec'
@@ -68,11 +72,11 @@ end
 		   gem_install('fauxhai') if !`gem list`.lines.grep(/^fauxhai \(.*\)/)
    		  end	 
           if RUBY_PLATFORM.index("mswin") != nil  or RUBY_PLATFORM.index("i386-mingw32") != nil
-             c = "cmd.exe /c \@start \"kitchen\" /D \"#{chef_repository}\" #{c}"
+             c = "cmd.exe /c \@start \"kitchen\" /D \"#{repository}\" #{c}"
    	         puts c
    	         system(c)
    	      else
-		     c = " cd #{chef_repository} && #{c}"
+		     c = " cd #{repository} && #{c}"
    	         puts c
    	         system(c)
    	         puts "kitchen #{cmd} return message #{$?}"
@@ -84,11 +88,11 @@ end
         c="kitchen #{cmd} #{instance}"
         c=c+" -l debug" if debug
         if RUBY_PLATFORM.index("mswin") != nil  or RUBY_PLATFORM.index("i386-mingw32") != nil
-             c = "cmd.exe /c \@start \"kitchen\" /D \"#{chef_repository}\" #{c}"
+             c = "cmd.exe /c \@start \"kitchen\" /D \"#{repository}\" #{c}"
    	         puts c
    	         system(c)
    	    else
-		     c = " cd #{chef_repository} && #{c}"
+		     c = " cd #{repository} && #{c}"
    	         puts c
    	         system(c)
    	         puts "kitchen #{cmd} return message #{$?}"

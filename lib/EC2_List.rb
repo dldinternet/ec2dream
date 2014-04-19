@@ -574,11 +574,16 @@ class EC2_List
 	         @vagrant_file  =  find_value('Vagrantfile',which.row) 
 			when "Local Servers"
 	         call_dialog(2)  
-			when "Chef Test Kitchen"
+			when "Chef"
 			 @curr_driver = find_value('Driver',which.row)
 			 @curr_provisioner = find_value('Provisioner',which.row)
 			 @curr_last_action = find_value('Last-Action',which.row)
 	         call_dialog(2)   
+			when "Puppet"
+			 @curr_driver = find_value('Driver',which.row)
+			 @curr_provisioner = find_value('Provisioner',which.row)
+			 @curr_last_action = find_value('Last-Action',which.row)
+	         call_dialog(2)   			 
  	      end 	         
 	  # else
 	  #    @curr_row = nil
@@ -735,8 +740,10 @@ end
                    end
                 end	
 		end
-      elsif type == "Chef Test Kitchen"	
+      elsif type == "Chef"	
          @data = kitchen_cmd("list")
+      elsif type == "Puppet"	
+         @data = kitchen_cmd("list",nil,false,"puppet")		 
       elsif type == "Vagrant"	
              begin
                 envs = Dir.entries($ec2_main.settings.get("VAGRANT_REPOSITORY"))

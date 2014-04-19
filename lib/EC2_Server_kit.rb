@@ -18,7 +18,8 @@ def kit_load(instance,driver,provisioner,last_action)
     @kit_server['driver'].text = driver
     @kit_server['provisioner'].text = provisioner
     @kit_server['last_action'].text = last_action
-	@kit_server['chef_repository'].text = @ec2_main.settings.get('CHEF_REPOSITORY')
+	#@kit_server['chef_repository'].text = @ec2_main.settings.get('CHEF_REPOSITORY')
+	@kit_server['chef_repository'].text = @ec2_main.settings.get('PUPPET_REPOSITORY')
 	@kit_server['chef_foodcritic'].text = @ec2_main.settings.get('CHEF_FOODCRITIC')
 	@kit_server['chef_rspec_test'].text = @ec2_main.settings.get('CHEF_RSPEC_TEST')
    end 
@@ -31,7 +32,8 @@ def kit_load(instance,driver,provisioner,last_action)
        @kit_server['driver'].text = data[0]['Driver']
        @kit_server['provisioner'].text = data[0]['Provisioner']
        @kit_server['last_action'].text = data[0]['Last-Action']
-       @kit_server['chef_repository'].text = @ec2_main.settings.get('CHEF_REPOSITORY')
+       #@kit_server['chef_repository'].text = @ec2_main.settings.get('CHEF_REPOSITORY')
+	   @kit_server['chef_repository'].text = @ec2_main.settings.get('PUPPET_REPOSITORY')
 	   @kit_server['chef_foodcritic'].text = @ec2_main.settings.get('CHEF_FOODCRITIC')
 	   @kit_server['chef_rspec_test'].text = @ec2_main.settings.get('CHEF_RSPEC_TEST')	   
 	end 
