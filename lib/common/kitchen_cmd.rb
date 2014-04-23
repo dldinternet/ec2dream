@@ -7,12 +7,8 @@ def kitchen_cmd(cmd='list',instance=nil,debug=false,repo_type="chef")
 	rescue
 	   puts $!
     end
-  end	
-  if repo_type=='puppet'
-    repository = $ec2_main.settings.get('PUPPET_REPOSITORY')
-  else
-    repository = $ec2_main.settings.get('CHEF_REPOSITORY')
   end
+  repository = $ec2_main.settings.get('TEST_KITCHEN_PATH')
   case cmd
    when "list"
 	gem_install('test-kitchen') if `gem list test-kitchen -i`.include?('false')
@@ -21,12 +17,12 @@ def kitchen_cmd(cmd='list',instance=nil,debug=false,repo_type="chef")
 	gem_install('berkshelf') if `gem list berkshelf -i`.include?('false')
 	gem_install('librarian-puppet') if `gem list librarian-puppet -i`.include?('false')
 	titles = []
-    list = []	
+    list = []
 	`cd \"#{repository}\" && kitchen list #{instance}`.lines do |line|
-    	      if titles == [] 
+    	      if titles == []
 			     line=line.gsub('Last Action','Last-Action')
                  titles = line.split(' ')
-			  else 
+			  else
 			     line=line.gsub('<Not Created>','<Not-Created>')
 				 line=line.gsub('Set Up','SetUp')
 			     entries = line.split(' ')
@@ -36,41 +32,41 @@ def kitchen_cmd(cmd='list',instance=nil,debug=false,repo_type="chef")
 				   h[titles[i]] = e
 				   i=i+1
 				 end
-                 list.push(h)				 
+                 list.push(h)
               end
      end
      return list
-   when 'config' 
+   when 'config'
     if RUBY_VERSION <= "1.9.3"
       # ensure that Psych and not Syck is used for Ruby 1.9.2
       require 'yaml'
       YAML::ENGINE.yamler = 'psych'
     end
-    require 'safe_yaml/load'  
-    config_file = "#{repository}/.kitchen/#{instance}.yml"	
+    require 'safe_yaml/load'
+    config_file = "#{repository}/.kitchen/#{instance}.yml"
 	config = nil
 	if File.exists?(config_file)
-       config = YAML.load_file(config_file) 
+       config = YAML.load_file(config_file)
        #config = config.inspect
 	else
-      puts "kitchen config file #{config_file} not found"	
-	end   
+      puts "kitchen config file #{config_file} not found"
+	end
 	return config
    when "edit"
 	   editor = @ec2_main.settings.get_system('EXTERNAL_EDITOR')
 	   c="\"#{editor}\" \"#{repository}/.kitchen.yml\""
 	   puts c
-	   system(c) 
+	   system(c)
    when 'foodcritic','rspec'
        c = "#{cmd} #{instance}"
        answer = FXMessageBox.question($ec2_main.tabBook,MBOX_YES_NO,"Confirm Command","Confirm Running #{c}")
        if answer == MBOX_CLICKED_YES
 	      if cmd == 'foodcritic'
  		   gem_install('foodcritic') if `gem list foodcritic -i`.include?('false')
-   		  else 
+   		  else
 		   gem_install('chefspec') if `gem list chefspec -i`.include?('false')
 		   gem_install('fauxhai') if !`gem list`.lines.grep(/^fauxhai \(.*\)/)
-   		  end	 
+   		  end
           if RUBY_PLATFORM.index("mswin") != nil  or RUBY_PLATFORM.index("i386-mingw32") != nil
              c = "cmd.exe /c \@start \"kitchen\" /D \"#{repository}\" #{c}"
    	         puts c
@@ -81,8 +77,8 @@ def kitchen_cmd(cmd='list',instance=nil,debug=false,repo_type="chef")
    	         system(c)
    	         puts "kitchen #{cmd} return message #{$?}"
    	      end
-       end		  
-   else 
+       end
+   else
      answer = FXMessageBox.question($ec2_main.tabBook,MBOX_YES_NO,"Confirm Kitchen Command","Confirm Running kitchen #{cmd} for instance #{instance}")
      if answer == MBOX_CLICKED_YES
         c="kitchen #{cmd} #{instance}"
@@ -96,8 +92,8 @@ def kitchen_cmd(cmd='list',instance=nil,debug=false,repo_type="chef")
    	         puts c
    	         system(c)
    	         puts "kitchen #{cmd} return message #{$?}"
-   	    end		 
-     end	 
-   end	
+   	    end
+     end
+   end
  end
 
