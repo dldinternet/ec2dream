@@ -1610,14 +1610,14 @@ class EC2_Server
 	    @ec2_main.settings.put('CHEF_FOODCRITIC',@kit_server['chef_foodcritic'].text)
 		@ec2_main.settings.save
 	end
-    FXLabel.new(@frame7, "e.g. site-cookbooks/mycompany_webserver" )
+    FXLabel.new(@frame7, "path of cookbook from TEST_KITCHEN_PATH" )
     FXLabel.new(@frame7, "RSpec spec files" )
     @kit_server['chef_rspec_test'] = FXTextField.new(@frame7, 40, nil, 0, :opts => FRAME_SUNKEN|LAYOUT_RIGHT)
 	@kit_server['chef_rspec_test'].connect(SEL_COMMAND) do
 	    @ec2_main.settings.put('CHEF_RSPEC_TEST',@kit_server['chef_rspec_test'].text)
 		@ec2_main.settings.save
 	end
-    FXLabel.new(@frame7, "e.g. site-cookbooks/*/spec/*_spec.rb" )
+    FXLabel.new(@frame7, "spec files to run  from TEST_KITCHEN_PATH" )
   end
 
   def run_scp

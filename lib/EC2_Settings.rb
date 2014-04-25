@@ -238,7 +238,11 @@ class EC2_Settings
 	@settings['CHEF_REPOSITORY_BUTTON'].tipText = "Browse..."
 	@settings['CHEF_REPOSITORY_BUTTON'].connect(SEL_COMMAND) do
 	   dialog = FXDirDialog.new(frame1, "Select Chef Repository Directory")
-           dialog.directory = "#{ENV['EC2DREAM_HOME']}/chef/chef-repo"
+	   if @settings['CHEF_REPOSITORY'].text==nil or @settings['CHEF_REPOSITORY'].text==""
+              dialog.directory = "#{ENV['EC2DREAM_HOME']}/chef/chef-repo"
+           else
+              dialog.directory = @settings['CHEF_REPOSITORY'].text
+           end
 	   if dialog.execute != 0
 	      @settings['CHEF_REPOSITORY'].text = dialog.directory
            end
@@ -250,7 +254,11 @@ class EC2_Settings
 	@settings['PUPPET_REPOSITORY_BUTTON'].tipText = "Browse..."
 	@settings['PUPPET_REPOSITORY_BUTTON'].connect(SEL_COMMAND) do
 	   dialog = FXDirDialog.new(frame1, "Select Puppet Repository Directory")
-           dialog.directory = "#{ENV['EC2DREAM_HOME']}/puppet/puppet_repo"
+	   if @settings['PUPPET_REPOSITORY'].text==nil or @settings['PUPPET_REPOSITORY'].text==""
+              dialog.directory = "#{ENV['EC2DREAM_HOME']}/puppet/puppet_repo"
+           else
+              dialog.directory = @settings['PUPPET_REPOSITORY'].text
+           end
 	   if dialog.execute != 0
 	      @settings['PUPPET_REPOSITORY'].text = dialog.directory
             end
@@ -262,7 +270,11 @@ class EC2_Settings
 	@settings['TEST_KITCHEN_PATH_BUTTON'].tipText = "Browse..."
 	@settings['TEST_KITCHEN_PATH_BUTTON'].connect(SEL_COMMAND) do
 	   dialog = FXDirDialog.new(frame1, "Select Vagrant Repository Directory")
-           dialog.directory = "#{ENV['EC2DREAM_HOME']}/chef/chef-repo/site-cookbooks/mycompany_webserver"
+	   if @settings['TEST_KITCHEN_PATH'].text==nil or @settings['TEST_KITCHEN_PATH'].text==""
+              dialog.directory = "#{ENV['EC2DREAM_HOME']}/chef/chef-repo/site-cookbooks/mycompany_webserver"
+           else
+              dialog.directory = @settings['TEST_KITCHEN_PATH'].text
+           end
 	   if dialog.execute != 0
 	      @settings['TEST_KITCHEN_PATH'].text = dialog.directory
            end
@@ -274,7 +286,12 @@ class EC2_Settings
 	@settings['VAGRANT_REPOSITORY_BUTTON'].tipText = "Browse..."
 	@settings['VAGRANT_REPOSITORY_BUTTON'].connect(SEL_COMMAND) do
 	   dialog = FXDirDialog.new(frame1, "Select Vagrant Repository Directory")
-           dialog.directory = "#{ENV['EC2DREAM_HOME']}/vagrant"
+	   if @settings['VAGRANT_REPOSITORY'].text==nil or @settings['VAGRANT_REPOSITORY'].text==""
+               dialog.directory = "#{ENV['EC2DREAM_HOME']}/vagrant"
+           else
+              dialog.directory = @settings['VAGRANT_REPOSITORY'].text
+           end
+
 	   if dialog.execute != 0
 	      @settings['VAGRANT_REPOSITORY'].text = dialog.directory
            end
