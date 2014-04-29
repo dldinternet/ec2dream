@@ -20,18 +20,18 @@ class EC2_Server
         @server = {}
         @resource_tags = nil
         @ops_server = {}
-		@ops_public_addr = {}
-		@ops_admin_pw = {}
-		@google_server = {}
-		@google_public_addr = {}
-		@google_admin_pw = {}
+	@ops_public_addr = {}
+	@ops_admin_pw = {}
+	@google_server = {}
+	@google_public_addr = {}
+	@google_admin_pw = {}
         @cfy_server = {}
         @cfy_env = []
         @cfy_env_curr_row = nil
-		@loc_server = {}
-		@kit_server = {}
-		@kit_debug = false
-		@saved = false
+	@loc_server = {}
+	@kit_server = {}
+	@kit_debug = false
+	@saved = false
         @block_mapping = []
         @flavor = {}
         @image = {}
@@ -90,7 +90,7 @@ class EC2_Server
 	@chart.create
 	@tunnel = @ec2_main.makeIcon("tunnel.png")
 	@tunnel.create
-    @save = @ec2_main.makeIcon("disk.png")
+        @save = @ec2_main.makeIcon("disk.png")
 	@save.create
 	@rocket = @ec2_main.makeIcon("rocket.png")
 	@rocket.create
@@ -867,12 +867,8 @@ class EC2_Server
 	end
 	FXLabel.new(@frame3, "" )
 	FXLabel.new(@frame3, "Security Groups" )
-	@ops_server['Security_Groups'] = FXTextField.new(@frame3, 25, nil, 0, :opts => TEXTFIELD_READONLY)
-
- 	FXLabel.new(@frame3, "" )
- 	FXLabel.new(@frame3, "Instance ID" )
- 	@frame3t = FXHorizontalFrame.new(@frame3,LAYOUT_FILL_X, :padding => 0)
- 	@ops_server['Instance_ID'] = FXTextField.new(@frame3t, 25, nil, 0, :opts => TEXTFIELD_READONLY)
+	@frame3t = FXHorizontalFrame.new(@frame3,LAYOUT_FILL_X, :padding => 0)
+	@ops_server['Security_Groups'] = FXTextField.new(@frame3t, 25, nil, 0, :opts => TEXTFIELD_READONLY)
  	FXLabel.new(@frame3t, "Puppet Manifest" )
  	@ops_server['Puppet_Manifest'] = FXTextField.new(@frame3t, 15, nil, 0, :opts => FRAME_SUNKEN)
 	@ops_server['Puppet_Manifest'].connect(SEL_COMMAND) do
@@ -883,6 +879,9 @@ class EC2_Server
     	      @ec2_main.launch.save
     	   end
 	end
+ 	FXLabel.new(@frame3, "" )
+ 	FXLabel.new(@frame3, "Instance ID" )
+ 	@ops_server['Instance_ID'] = FXTextField.new(@frame3, 50, nil, 0, :opts => TEXTFIELD_READONLY)
 	FXLabel.new(@frame3, "" )
  	FXLabel.new(@frame3, "Image ID" )
  	@ops_server['Image_ID'] = FXTextField.new(@frame3, 50, nil, 0, :opts => TEXTFIELD_READONLY)
@@ -1599,8 +1598,18 @@ class EC2_Server
     FXLabel.new(@frame7, "" )
     FXLabel.new(@frame7, "" )
     FXLabel.new(@frame7, "Test Kitchen Path" )
- 	@kit_server['test_kitchen_path'] = FXTextField.new(@frame7, 40, nil, 0, :opts => FRAME_SUNKEN|LAYOUT_RIGHT|TEXTFIELD_READONLY)
-    FXLabel.new(@frame7, "" )
+    @kit_server['test_kitchen_path'] = FXTextField.new(@frame7, 40, nil, 0, :opts => FRAME_SUNKEN|LAYOUT_RIGHT|TEXTFIELD_READONLY)
+    @kit_server['test_kitchen_path_button'] = FXButton.new(@frame7, " ",:opts => BUTTON_TOOLBAR)
+    @kit_server['test_kitchen_path_button'].icon = @modify
+    @kit_server['test_kitchen_path_button'].tipText = "  Configure Test Kitchen Path  "
+    @kit_server['test_kitchen_path_button'].connect(SEL_COMMAND) do |sender, sel, data|
+        dialog = KIT_PathCreateDialog.new(@ec2_main)
+        dialog.execute
+        if dialog.success
+            @ec2_main.tabBook.setCurrent(0)
+            @ec2_main.list.load("Test Kitchen")
+        end
+    end
     FXLabel.new(@frame7, "SSH User" )
  	@kit_server['ssh_user'] = FXTextField.new(@frame7, 30, nil, 0, :opts => FRAME_SUNKEN|LAYOUT_LEFT)
     FXLabel.new(@frame7, "" )

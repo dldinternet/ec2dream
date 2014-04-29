@@ -339,8 +339,17 @@ class Data_servers
 	    else
 	       data = {}
 	    end
-         elsif  @ec2_main.settings.openstack
+         elsif  @ec2_main.settings.openstack_hp
             data = conn.create_server(name,  flavor_ref.to_i, image_ref.to_i, options)
+            if data.status == 200 or data.status == 202
+	       data = data.body['server']
+	       data[:aws_instance_id] = data[:id].to_s
+	       data[:aws_launch_time] = data[:created_at].to_s
+	    else
+	       data = {}
+	    end
+         elsif  @ec2_main.settings.openstack
+            data = conn.create_server(name, image_ref.to_s, flavor_ref.to_i,  options)
             if data.status == 200 or data.status == 202
 	       data = data.body['server']
 	       data[:aws_instance_id] = data[:id].to_s
@@ -415,11 +424,11 @@ class Data_servers
      conn = @ec2_main.environment.connection
      if conn != nil
         if @ec2_main.settings.openstack
-           if  !@ec2_main.settings.openstack_rackspace
-              data = conn.delete_server(server_id.to_i)
-           else
+           #if  !@ec2_main.settings.openstack_rackspace
+           #   data = conn.delete_server(server_id.to_i)
+           #else
               data = conn.delete_server(server_id)
-           end
+           #end
            if data.status == 204
 	          data = true
 	       else

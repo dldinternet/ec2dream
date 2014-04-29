@@ -49,6 +49,7 @@ class Data_snapshots
     if conn != nil
        begin
           if  @ec2_main.settings.openstack
+             conn = @ec2_main.environment.connection if !@ec2_main.settings.openstack_hp and !@ec2_main.settings.openstack_rackspace
              x  = conn.snapshots.all
              x.each do |y|
 	        r = {}

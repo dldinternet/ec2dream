@@ -1,6 +1,7 @@
-### Version 3.7.3 may 2014
+### Version 3.7.3 May 2014
 enhance test-kitchen support
 add test-kitchen puppet support
+fix openstack support
 
 
 ### Version 3.7.2 Mar 2014

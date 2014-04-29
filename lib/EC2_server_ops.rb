@@ -102,21 +102,28 @@ class EC2_Server
     	 @ops_server['Addresses'].text = ""
     	 addr_list = ""
     	 r[:addresses].each do |k, a|
-    	    #puts "k #{k} a #{a}"
+    	    #puts "*** k #{k} a #{a}"
     	    a.each do |v|
-    	       #puts "v #{v}"
+    	       #puts "*** v #{v}"
     	       if v["addr"] != nil
     	          if addr_list.length > 0
     	             addr_list = addr_list+","+v["addr"]
     	          else
     	             addr_list = v["addr"]
                   end
-                  if  @ops_server['Public_Addr'].text == "" and !v["addr"].start_with?("10.") and v["addr"].index(':')==nil
+                  if v["OS-EXT-IPS:type"] == 'floating'
                      @ops_server['Public_Addr'].text = v["addr"]
-                     @ops_public_addr[instance_id]
+                     @ops_public_addr[instance_id] = v["addr"]
                   end
                end
              end
+         end
+         if @ops_server['Public_Addr'].text ==nil or @ops_server['Public_Addr'].text == ""
+            v = addr_list.split(',')
+            if v.size>0
+              @ops_server['Public_Addr'].text  = v[-1]
+              @ops_public_addr[instance_id]  = v[-1]
+            end
          end
          @ops_server['Addresses'].text = addr_list
     	 @ops_server['Progress'].text = "#{r[:progress]}%"
@@ -158,13 +165,15 @@ class EC2_Server
     	 if r[:password] != nil
 	    @ops_server['Admin_Password'].text =  r[:password]
 	 end
+     else
+	ops_clear_panel
      end
      @ec2_main.app.forceRefresh
   end
 
 def group_array(x)
      ga = Array.new
-     puts "security groups #{x['security_groups']}"
+     #puts "security groups #{x['security_groups']}"
      if x[:sec_groups].instance_of? Array and x[:sec_groups][0] != nil
         ga = x[:sec_groups]
      elsif x['security_groups'].instance_of? Array and x['security_groups'][0] != nil
@@ -203,7 +212,7 @@ def group_array(x)
        else
          cn = @ec2_main.launch.get('Chef_Node')
          if cn == nil or cn == ""
-          cn = @secgrp
+          cn = @ops_server['Name'].text
          end
        end
        return cn

@@ -408,7 +408,8 @@ class EC2_SecGrp
         #@top.setCellColor(2,0,FXRGB(240, 240, 240))
         @top.setItemJustify(2, 0, FXTableItem::LEFT)
         j = 0
-        if y != nil and !@ec2_main.settings.openstack
+        if y != nil
+          if @ec2_main.settings.openstack_hp or @ec2_main.settings.openstack_rackspace
            y.each do |p|
                 lists_0[j] = p["ip_protocol"]
    	      lists_1[j] = p["from_port"].to_s
@@ -421,6 +422,20 @@ class EC2_SecGrp
    	      @rule_ids[j] = p["id"]
    	      j=j+1
    	   end
+   	  else
+            y.each do |p|
+                lists_0[j] = p.ip_protocol
+   	      lists_1[j] = p.from_port.to_s
+   	      lists_2[j] = p.to_port.to_s
+   	      if p.ip_range['cidr'] != nil
+   	         lists_3[j] = p.ip_range['cidr']
+   	      elsif  p.group['name'] != nil
+   	         lists_3[j] = p.group['name']
+   	      end
+   	      @rule_ids[j] = p.id
+   	      j=j+1
+   	   end
+   	  end
         end
         i = lists_0.length
         @table.clearItems

@@ -269,7 +269,7 @@ class EC2_Settings
 	@settings['TEST_KITCHEN_PATH_BUTTON'].icon = @magnifier
 	@settings['TEST_KITCHEN_PATH_BUTTON'].tipText = "Browse..."
 	@settings['TEST_KITCHEN_PATH_BUTTON'].connect(SEL_COMMAND) do
-	   dialog = FXDirDialog.new(frame1, "Select Vagrant Repository Directory")
+	   dialog = FXDirDialog.new(frame1, "Select Test Kitchen Path")
 	   if @settings['TEST_KITCHEN_PATH'].text==nil or @settings['TEST_KITCHEN_PATH'].text==""
               dialog.directory = "#{ENV['EC2DREAM_HOME']}/chef/chef-repo/site-cookbooks/mycompany_webserver"
            else

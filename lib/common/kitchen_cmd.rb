@@ -1,4 +1,4 @@
-def kitchen_cmd(cmd='list',instance=nil,debug=false,repo_type="chef")
+def kitchen_cmd(cmd='list',instance=nil,debug=false)
 
   def gem_install(name)
 	puts "------>Installing #{name}....."
@@ -13,11 +13,11 @@ def kitchen_cmd(cmd='list',instance=nil,debug=false,repo_type="chef")
    when "list"
 	gem_install('test-kitchen') if `gem list test-kitchen -i`.include?('false')
 	gem_install('kitchen-vagrant') if `gem list kitchen-vagrant -i`.include?('false')
-    gem_install('kitchen-ec2') if `gem list kitchen-ec2 -i`.include?('false')
+        gem_install('kitchen-ec2') if `gem list kitchen-ec2 -i`.include?('false')
 	gem_install('berkshelf') if `gem list berkshelf -i`.include?('false')
 	gem_install('librarian-puppet') if `gem list librarian-puppet -i`.include?('false')
 	titles = []
-    list = []
+        list = []
 	`cd \"#{repository}\" && kitchen list #{instance}`.lines do |line|
     	      if titles == []
 			     line=line.gsub('Last Action','Last-Action')
