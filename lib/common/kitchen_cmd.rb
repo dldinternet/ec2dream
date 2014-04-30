@@ -15,7 +15,6 @@ def kitchen_cmd(cmd='list',instance=nil,debug=false)
 	gem_install('kitchen-vagrant') if `gem list kitchen-vagrant -i`.include?('false')
         gem_install('kitchen-ec2') if `gem list kitchen-ec2 -i`.include?('false')
 	gem_install('berkshelf') if `gem list berkshelf -i`.include?('false')
-	gem_install('librarian-puppet') if `gem list librarian-puppet -i`.include?('false')
 	titles = []
         list = []
 	`cd \"#{repository}\" && kitchen list #{instance}`.lines do |line|
