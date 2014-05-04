@@ -30,5 +30,5 @@ platforms:
 suites:
   - name: default
     run_list:
-      - recipe[base,mycompany_webserver]
+      - recipe[mycompany_webserver]
     attributes:
