@@ -51,7 +51,7 @@ class EC2_Main < FXMainWindow
     $ec2_main = self
     @initial_startup = false
     @app = app
-    super(app, "#{product} v3.7.3 - Build and Manage Cloud Servers", :opts => DECOR_ALL, :width => 900, :height => 650)
+    super(app, "#{product} v3.7.4 - Build and Manage Cloud Servers", :opts => DECOR_ALL, :width => 900, :height => 650)
 
     # Status bar
     status = FXStatusBar.new(self,
@@ -68,7 +68,7 @@ class EC2_Main < FXMainWindow
 
     #left hand tree panel
     @tree = FXTreeList.new(group1,
-    	      :opts => (LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_TOP|LAYOUT_RIGHT|TREELIST_SHOWS_LINES|
+              :opts => (LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_TOP|LAYOUT_RIGHT|TREELIST_SHOWS_LINES|
       TREELIST_SHOWS_BOXES|TREELIST_ROOT_BOXES|TREELIST_SINGLESELECT))
 
     @treeCache = EC2_TreeCache.new(self,@tree)
@@ -80,7 +80,7 @@ class EC2_Main < FXMainWindow
       LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_RIGHT)
     @environment = EC2_Environment.new(self,app)
 
-	# list panel
+        # list panel
      @list = EC2_List.new(self,app)
 
     # Server panel
@@ -113,26 +113,26 @@ class EC2_Main < FXMainWindow
        tree_top_level(item)
      elsif (item.parent).parent == nil and (item.parent).text == "Environments"
        if item.text == "Create New Environment"
-	      dialog = EC2_EnvCreateDialog.new($ec2_main)
-	      dialog.execute
-	       puts "Environment Created #{dialog.created}"
-	      if dialog.created
-	         @environment.reset_connection
-	         @environment.load_env
-	      end
+              dialog = EC2_EnvCreateDialog.new($ec2_main)
+              dialog.execute
+               puts "Environment Created #{dialog.created}"
+              if dialog.created
+                 @environment.reset_connection
+                 @environment.load_env
+              end
        elsif item.text == "Delete Existing Environment"
-	      if @treeCache.status != "loading"
-	         dialog = EC2_EnvDeleteDialog.new($ec2_main)
-    	     dialog.execute
-			 if dialog.success
-			    @treeCache.refresh_env
-			 end
-    	  end
+              if @treeCache.status != "loading"
+                 dialog = EC2_EnvDeleteDialog.new($ec2_main)
+             dialog.execute
+                         if dialog.success
+                            @treeCache.refresh_env
+                         end
+          end
        else
           @settings.put_system('ENVIRONMENT',item.text)
           @settings.save_system
           @environment.reset_connection
-		  @imageCache.set_status("empty")
+                  @imageCache.set_status("empty")
           @environment.load_env
        end
      elsif (item.parent).parent == nil  and ((item.parent).text == "Env - #{@environment.env}")
@@ -165,67 +165,67 @@ class EC2_Main < FXMainWindow
              puts "launch"
              @launch.clear_panel
              @tabBook.setCurrent(2)
-	  when "Servers","Apps"
+          when "Servers","Apps"
              puts "#{item.text}"
-  	     @tabBook.setCurrent(0)
-  	     @list.load(item.text)
-	   else
-	     if (item.text).start_with? "vpc-"
-		    puts "#{item.text}"
-  	        @tabBook.setCurrent(0)
-  	        @list.load("Servers")
-		 else
-	      puts "first level menu #{item.text}"
-		  if item.numChildren == 0
-    	   puts item.text
-  	       @tabBook.setCurrent(0)
-  	       @list.load(item.text)
-	     else
-		    if item.expanded?
-			  @tree.collapseTree(item)
-			else
-			  @tree.expandTree(item)
+             @tabBook.setCurrent(0)
+             @list.load(item.text)
+           else
+             if (item.text).start_with? "vpc-"
+                    puts "#{item.text}"
+                @tabBook.setCurrent(0)
+                @list.load("Servers")
+                 else
+              puts "first level menu #{item.text}"
+                  if item.numChildren == 0
+           puts item.text
+               @tabBook.setCurrent(0)
+               @list.load(item.text)
+             else
+                    if item.expanded?
+                          @tree.collapseTree(item)
+                        else
+                          @tree.expandTree(item)
             end
           end
-		 end
-      	end
+                 end
+        end
       end
    end
 
    def tree_second_level(item)
       # need to handle a server not under a security group
          if ((item.parent).parent).text == "Servers" or (item.parent).text == "Servers"
-		    process_server(item)
-		 elsif (((item.parent).parent).text).start_with? "vpc-"
+                    process_server(item)
+                 elsif (((item.parent).parent).text).start_with? "vpc-"
             process_server(item,((item.parent).parent).text)
-		 elsif ((item.parent).text).start_with? "vpc-"
+                 elsif ((item.parent).text).start_with? "vpc-"
             process_server(item,(item.parent).text)
          else
                         case (item.parent).text
-	                  when "Apps"
-	                       sa = (item.text).split"/"
-	                       g = ""
-	                       if sa.size>1
-	                          g = sa[0]
-	    		         if g != nil and g != ""
-	 		            @launch.load(g)
-	       		            @server.load(item.text)
-	                             @tabBook.setCurrent(1)
-	                          end
-	                       else
-	  	                 @launch.load(item.text)
-	       		         @server.clear_panel
-	                          @tabBook.setCurrent(2)
-	                       end
-					  when "Launch"
-						  puts "Launch #{item.text} "
-						  @launch.load(item.text)
-					  	  @tabBook.setCurrent(2)
- 	                  else
-	                      puts "second level menu #{item.text} #{(item.parent).text}"
-  	                      @tabBook.setCurrent(0)
-  	                      @list.load(item.text,(item.parent).text)
-      	                  end
+                          when "Apps"
+                               sa = (item.text).split"/"
+                               g = ""
+                               if sa.size>1
+                                  g = sa[0]
+                                 if g != nil and g != ""
+                                    @launch.load(g)
+                                    @server.load(item.text)
+                                     @tabBook.setCurrent(1)
+                                  end
+                               else
+                                 @launch.load(item.text)
+                                 @server.clear_panel
+                                  @tabBook.setCurrent(2)
+                               end
+                                          when "Launch"
+                                                  puts "Launch #{item.text} "
+                                                  @launch.load(item.text)
+                                                  @tabBook.setCurrent(2)
+                          else
+                              puts "second level menu #{item.text} #{(item.parent).text}"
+                              @tabBook.setCurrent(0)
+                              @list.load(item.text,(item.parent).text)
+                          end
             end
    end
 
@@ -237,26 +237,26 @@ class EC2_Main < FXMainWindow
                  if item.text[s_id] != nil
                     sa = (item.text).split(s_id)
                     g = ""
-      		    n = ""
+                    n = ""
                     if sa.size>1
                        g = serverCache.instance_sec_group(sa[1])
-      		       n=sa[0]
+                       n=sa[0]
                        if g == nil or g == ""
                           g = sa[0]
                        end
                     end
-      		    if g != nil and g != ""
-      		       @launch.load(n)
-      		       @secgrp.load(g,vpc)
-            	    end
-            	    @server.load_server(item.text)
+                    if g != nil and g != ""
+                       @launch.load(n)
+                       @secgrp.load(g,vpc)
+                    end
+                    @server.load_server(item.text)
                     @tabBook.setCurrent(1)
-            	 else
-            	    @server.clear_panel
-            	    @launch.clear_panel
-            	    # comment out for openstack code problem
-            	    @secgrp.load(item.text,vpc)
-            	    @tabBook.setCurrent(3)
+                 else
+                    @server.clear_panel
+                    @launch.clear_panel
+                    # comment out for openstack code problem
+                    @secgrp.load(item.text,vpc)
+                    @tabBook.setCurrent(3)
                  end
   end
 
@@ -313,74 +313,74 @@ class EC2_Main < FXMainWindow
 
   def cloud
       platform = @settings.get("EC2_PLATFORM")
-	  case platform
-	   when "amazon"
-	     if @Amazon != nil
+          case platform
+           when "amazon"
+             if @Amazon != nil
            @Amazon
          else
            @Amazon = Amazon.new
-		 end
-	    when "google"
-	     if @Google != nil
+                 end
+            when "google"
+             if @Google != nil
            @Google
          else
            @Google = Google_compute.new
-		 end
+                 end
        when "openstack_hp"
-	     if @Hp != nil
+             if @Hp != nil
            @Hp
          else
            @Hp = Hp.new
-		 end
+                 end
        when "openstack_rackspace"
-	     if @Rackspace != nil
+             if @Rackspace != nil
            @Rackspace
          else
            @Rackspace = Rackspace.new
-		 end
+                 end
        when "openstack"
-	     if @OpenStack != nil
+             if @OpenStack != nil
            @OpenStack
          else
            @OpenStack = OpenStack.new
-		 end
+                 end
        when "eucalyptus"
-	     if @Eucalyptus != nil
+             if @Eucalyptus != nil
            @Eucalyptus
          else
            @Eucalyptus = Eucalyptus.new
-		 end
-	   when "cloudstack"
-	     if @CloudStack != nil
+                 end
+           when "cloudstack"
+             if @CloudStack != nil
            @CloudStack
          else
            @CloudStack = CloudStack.new
-		 end
-	   when "cloudfoundry"
-	     if @Cloud_Foundry != nil
+                 end
+           when "cloudfoundry"
+             if @Cloud_Foundry != nil
            @Cloud_Foundry
          else
            @Cloud_Foundry = Cloud_Foundry.new
-		 end
-	   when "servers"
-	     if @Servers != nil
+                 end
+           when "servers"
+             if @Servers != nil
            @Servers
          else
            @Servers = Servers.new
-		 end
+                 end
       end
   end
 
   def cloud_reset
     @Amazon = nil
-	@Google = nil
+        @Google = nil
     @Hp = nil
     @Rackspace = nil
     @OpenStack = nil
     @Eucalyptus = nil
     @CloudStack = nil
     @Cloud_Foundry = nil
-	@Servers = nil
+        @Servers = nil
   end
 
   def app
@@ -405,7 +405,7 @@ class EC2_Main < FXMainWindow
   def enable_if_env_set(sender)
       @env = @environment.env
       if @env != nil and @env.length>0
-      	sender.enabled = true
+        sender.enabled = true
       else
         sender.enabled = false
       end
